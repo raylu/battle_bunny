@@ -1,0 +1,19 @@
+{
+  "name": "battle_bunny",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "^1.1.14"
+  },
+  "peerDependencies": {
+    "typescript": "^5.7.2"
+  },
+  "scripts": {
+    "build": "bun build --outdir static --sourcemap=linked --splitting frontend/index.ts",
+    "watch": "bun run build --watch",
+    "lint": "tsc && eslint"
+  },
+  "dependencies": {
+    "@excaliburjs/plugin-jsfxr": "^0.30.0",
+    "excalibur": "^0.30.2"
+  }
+}
