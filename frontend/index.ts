@@ -42,16 +42,17 @@ redWitch.animations.takeDamage.events.on('end', () => {
 	redWitch.graphics.use(redWitch.animations.idle);
 });
 game.add(redWitch);
-const up = document.querySelector('.dialpad .up') as HTMLElement;
+const dialpad = document.querySelector('.dialpad') as HTMLDivElement;
+const up = dialpad.querySelector('.up') as HTMLElement;
 up.addEventListener('mousedown', () => redWitch.motion.vel.y = -100);
 up.addEventListener('mouseup', () => redWitch.motion.vel.y = 0);
-const down = document.querySelector('.dialpad .down') as HTMLElement;
+const down = dialpad.querySelector('.down') as HTMLElement;
 down.addEventListener('mousedown', () => redWitch.motion.vel.y = 100);
 down.addEventListener('mouseup', () => redWitch.motion.vel.y = 0);
-const left = document.querySelector('.dialpad .left') as HTMLElement;
+const left = dialpad.querySelector('.left') as HTMLElement;
 left.addEventListener('mousedown', () => redWitch.motion.vel.x = -100);
 left.addEventListener('mouseup', () => redWitch.motion.vel.x = 0);
-const right = document.querySelector('.dialpad .right') as HTMLElement;
+const right = dialpad.querySelector('.right') as HTMLElement;
 right.addEventListener('mousedown', () => redWitch.motion.vel.x = 100);
 right.addEventListener('mouseup', () => redWitch.motion.vel.x = 0);
 
@@ -94,4 +95,5 @@ function enemyAttack(target: Unit): Promise<void> {
 	return promise;
 }
 
-void game.start(loader);
+await game.start(loader);
+dialpad.style.display = 'flex';

@@ -28,7 +28,7 @@ canvas#game {
 	position: absolute;
 	bottom: 15px;
 	left: 15px;
-	display: flex;
+	display: none;
 	width: var(--size);
 	height: var(--size);
 	flex-wrap: wrap;
