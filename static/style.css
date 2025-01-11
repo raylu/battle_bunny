@@ -1,0 +1,154 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #000;
+	color: #aaa;
+	font: 18px Metrophobic, sans-serif;
+}
+
+a:link, a:visited, a:active {
+	color: #58a;
+	text-decoration: none;
+}
+a:hover {
+	color: #5ad;
+}
+
+canvas#game {
+	display: block;
+}
+
+.dialpad {
+	--size: 150px;
+	--color1: #777a;
+	--color2: #a5dd;
+
+	position: absolute;
+	bottom: 15px;
+	left: 15px;
+	display: flex;
+	width: var(--size);
+	height: var(--size);
+	flex-wrap: wrap;
+	vertical-align: top;
+	transform: rotate(45deg);
+	border-radius: 50%;
+	overflow: hidden;
+}
+.dialpad .center {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: calc(var(--size) / 3);
+	width: calc(var(--size) / 3);
+	color: #fefefe;
+	background-color: var(--color1);
+	font-size: 2rem;
+	overflow: hidden;
+	z-index: 2;
+	border-radius: 50%;
+}
+.dialpad .center .circle-control {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	line-height: calc(var(--size) / 3);
+	height: calc(var(--size) / 3);
+	width: calc(var(--size) / 3);
+	text-align: center;
+	border-radius: 50%;
+}
+.dialpad .center .circle-control:before {
+	content: '';
+	background: #fefefeaa;
+	border-radius: 50%;
+	height: 60%;
+	width: 60%;
+}
+.dialpad .direction-btn {
+    display: flex;
+    flex: calc(var(--size) / 2);
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color1);
+    color: #fefefeaa;
+    height: calc(var(--size) / 2);
+    overflow: hidden;
+}
+.dialpad .direction-btn:hover {
+	background-color: var(--color2) !important;
+	overflow: hidden;
+}
+.dialpad .direction-btn i {
+	font-size: 1.6rem;
+	transform: rotate(-45deg);
+}
+.dialpad .direction-btn .arrow {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+	width: 100%;
+}
+.dialpad .direction-btn .arrow:hover {
+	background-color: var(--color2);
+}
+.dialpad .direction-btn .arrow:before {
+	content: '';
+	display: block;
+	height: 15%;
+	width: 15%;
+	border-right: 4px solid;
+	border-top: 4px solid;
+}
+.dialpad .direction-btn .arrow.up:before {
+	transform: rotateZ(-90deg);
+	margin-bottom: -15%;
+	margin-right: -15%;
+}
+.dialpad .direction-btn .arrow.left:before {
+	transform: rotateZ(-180deg);
+	margin-top: -15%;
+	margin-right: -15%;
+}
+.dialpad .direction-btn .arrow.right:before {
+	transform: rotateZ(0deg);
+	margin-left: -15%;
+	margin-bottom: -15%;
+}
+.dialpad .direction-btn .arrow.down:before {
+	transform: rotateZ(90deg);
+	margin-top: -15%;
+	margin-left: -15%;
+}
+
+main,
+footer {
+	width: 512px;
+	margin: 0 auto;
+}
+
+main {
+	position: relative;
+	height: 640px;
+}
+
+main a {
+	display: block;
+	margin-bottom: 1em;
+}
+
+main img {
+	height: 32px;
+}
+
+footer {
+	margin: 100px auto;
+	text-align: right;
+}
