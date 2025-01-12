@@ -124,7 +124,7 @@ class Spell {
 		if (target.freeze > 100)
 			targetDamage *= this.stats.targetFrozenDamageMultiplier;
 		target.takeDamage(targetDamage);
-		if (target.isDead()) // no longer possible now that enemy has null health
+		if (target.isDead())
 			deaths.push(target.die());
 
 		for (const unit of allUnits) {

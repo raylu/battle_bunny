@@ -32,20 +32,19 @@ export const redWitchAnims: UnitAnimations = {
 } as const;
 export const redWitchIconImg = new ImageSource('static/sprites/red_witch/icon.gif');
 
-const enemyImg = new ImageSource('static/sprites/enemy.png');
-const enemySprites = SpriteSheet.fromImageSource({
-	image: enemyImg,
+const piggyImg = new ImageSource('static/sprites/piggy.png');
+const piggySprites = SpriteSheet.fromImageSource({
+	image: piggyImg,
 	grid: {
-		rows: 17,
-		columns: 6,
-		spriteHeight: 44,
-		spriteWidth: 69,
+		rows: 2,
+		columns: 5,
+		spriteHeight: 32,
+		spriteWidth: 32,
 	},
 });
-export const enemyAnims = {
-	idle: Animation.fromSpriteSheet(enemySprites, range(0, 5), 100),
-	attack: Animation.fromSpriteSheet(enemySprites, range(6, 25), 50, AnimationStrategy.Freeze),
-	death: Animation.fromSpriteSheet(enemySprites, range(26, 36), 150, AnimationStrategy.Freeze),
+export const piggyAnims = {
+	idle: Animation.fromSpriteSheet(piggySprites, range(5, 8), 100),
+	death: Animation.fromSpriteSheet(piggySprites, range(0, 3), 150, AnimationStrategy.Freeze),
 } as const;
 
 const terrainGrassImg = new ImageSource('static/sprites/terrain/tileset_grass.png');
@@ -150,6 +149,6 @@ export const armageddonAnims = {
 	}), range(0, 17), 100, AnimationStrategy.Freeze),
 };
 
-loader.addResources([...resources, redWitchIconImg, enemyImg, terrainGrassImg,
+loader.addResources([...resources, redWitchIconImg, piggyImg, terrainGrassImg,
 	spellIconsImg, iceBlastProjectileImg, iceBlastImpactImg, iceNovaVortexImg, iceNovaEndImg, fireballImg,
 	armageddonBeamImg, armageddonExplosionImg]);
