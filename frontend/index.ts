@@ -1,4 +1,4 @@
-import {Color, DisplayMode, Engine, Random, TileMap, vec} from 'excalibur';
+import {DisplayMode, Engine, Random, TileMap, vec} from 'excalibur';
 
 import {loader} from './loader';
 import {sndPlugin} from './sounds';
@@ -43,18 +43,16 @@ redWitch.animations.takeDamage.events.on('end', () => {
 });
 game.add(redWitch);
 const dialpad = document.querySelector('.dialpad') as HTMLDivElement;
-const up = dialpad.querySelector('.up') as HTMLElement;
-up.addEventListener('mousedown', () => redWitch.motion.vel.y = -100);
-up.addEventListener('mouseup', () => redWitch.motion.vel.y = 0);
-const down = dialpad.querySelector('.down') as HTMLElement;
-down.addEventListener('mousedown', () => redWitch.motion.vel.y = 100);
-down.addEventListener('mouseup', () => redWitch.motion.vel.y = 0);
-const left = dialpad.querySelector('.left') as HTMLElement;
-left.addEventListener('mousedown', () => redWitch.motion.vel.x = -100);
-left.addEventListener('mouseup', () => redWitch.motion.vel.x = 0);
-const right = dialpad.querySelector('.right') as HTMLElement;
-right.addEventListener('mousedown', () => redWitch.motion.vel.x = 100);
-right.addEventListener('mouseup', () => redWitch.motion.vel.x = 0);
+for (const [dir, vel] of Object.entries({
+	up: vec(0, -100),
+	down: vec(0, 100),
+	left: vec(-100, 0),
+	right: vec(100, 0),
+} as const)) {
+	const button = dialpad.querySelector('.' + dir) as HTMLElement;
+	button.addEventListener('mousedown', () => redWitch.motion.vel = vel);
+}
+window.addEventListener('mouseup', () => redWitch.motion.vel = vec(0, 0));
 
 const ENEMY_START = vec(500, 200);
 const enemy = new Unit({
