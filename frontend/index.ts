@@ -53,19 +53,21 @@ for (const [dir, vel] of Object.entries({
 }
 window.addEventListener('mouseup', () => redWitch.motion.vel = vec(0, 0));
 
-const piggy = new Unit({
-	pos: vec(480, 200),
-	offset: vec(-4, -3),
-	scale: vec(2, 2),
-	width: 22,
-	height: 36,
-}, {
-	maxHP: 1,
-	animations: {...piggyAnims, charge: piggyAnims.idle, takeDamage: piggyAnims.idle},
-	spellSlots: [],
-});
-piggy.graphics.flipHorizontal = true;
-game.add(piggy);
+function makePiggy() {
+	const piggy = new Unit({
+		pos: vec(480, 200),
+		scale: vec(2, 2),
+		width: 19,
+		height: 18,
+	}, {
+		maxHP: 20,
+		animations: {...piggyAnims, charge: piggyAnims.idle, takeDamage: piggyAnims.idle},
+		spellSlots: [],
+	});
+	piggy.graphics.flipHorizontal = true;
+	game.add(piggy);
+}
+makePiggy();
 
 await game.start(loader);
 dialpad.style.display = 'flex';

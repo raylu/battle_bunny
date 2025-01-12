@@ -38,8 +38,8 @@ const piggySprites = SpriteSheet.fromImageSource({
 	grid: {
 		rows: 2,
 		columns: 5,
-		spriteHeight: 32,
-		spriteWidth: 32,
+		spriteHeight: 18,
+		spriteWidth: 19,
 	},
 });
 export const piggyAnims = {
