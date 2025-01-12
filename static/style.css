@@ -81,7 +81,7 @@ canvas#game {
     height: calc(var(--size) / 2);
     overflow: hidden;
 }
-.dialpad .direction-btn:hover {
+.dialpad .direction-btn:hover, .dialpad .direction-btn:active {
 	background-color: var(--color2) !important;
 	overflow: hidden;
 }
@@ -96,7 +96,7 @@ canvas#game {
 	height: 100%;
 	width: 100%;
 }
-.dialpad .direction-btn .arrow:hover {
+.dialpad .direction-btn .arrow:hover, .dialpad .direction-btn .arrow:active {
 	background-color: var(--color2);
 }
 .dialpad .direction-btn .arrow:before {

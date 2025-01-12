@@ -49,9 +49,16 @@ for (const [dir, vel] of Object.entries({
 	right: vec(100, 0),
 } as const)) {
 	const button = dialpad.querySelector('.' + dir) as HTMLElement;
-	button.addEventListener('mousedown', () => redWitch.motion.vel = vel);
+	const handler = (event: Event) => {
+		event.preventDefault(); // don't propogate touch event to click
+		redWitch.motion.vel = vel;
+	};
+	button.addEventListener('mousedown', handler);
+	button.addEventListener('touchstart', handler);
 }
-window.addEventListener('mouseup', () => redWitch.motion.vel = vec(0, 0));
+const stop = () => redWitch.motion.vel = vec(0, 0);
+for (const eventName of ['mouseup', 'touchend', 'touchcancel'])
+	window.addEventListener(eventName, stop);
 
 function makePiggy() {
 	const piggy = new Unit({
