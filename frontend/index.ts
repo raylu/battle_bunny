@@ -49,12 +49,18 @@ for (const [dir, vel] of Object.entries({
 	right: vec(100, 0),
 } as const)) {
 	const button = dialpad.querySelector('.' + dir) as HTMLElement;
-	const handler = (event: Event) => {
+	const startHandler = (event: Event) => {
 		event.preventDefault(); // don't propogate touch event to click
 		redWitch.motion.vel = vel;
 	};
-	button.addEventListener('mousedown', handler);
-	button.addEventListener('touchstart', handler);
+	button.addEventListener('mousedown', startHandler);
+	button.addEventListener('touchstart', startHandler);
+	const switchHandler = (event: Event) => {
+		if (!redWitch.motion.vel.equals(vec(0, 0)))
+			redWitch.motion.vel = vel;
+	};
+	button.addEventListener('mousemove', switchHandler);
+	button.addEventListener('touchmove', switchHandler);
 }
 const stop = () => redWitch.motion.vel = vec(0, 0);
 for (const eventName of ['mouseup', 'touchend', 'touchcancel'])
