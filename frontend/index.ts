@@ -9,8 +9,10 @@ import {Unit} from './unit';
 const game = new Engine({
 	canvasElement: document.querySelector('canvas#game') as HTMLCanvasElement,
 	resolution: {width: 512, height: 640}, // must be a multiple of referenceGrassSprite.width (64)
+	suppressHiDPIScaling: true,
 	displayMode: DisplayMode.FitContainer,
 	pixelArt: true,
+	antialiasing: false,
 	suppressConsoleBootMessage: true,
 });
 
