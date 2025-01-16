@@ -42,26 +42,24 @@ redWitch.animations.takeDamage.events.on('end', () => {
 });
 game.add(redWitch);
 const dialpad = document.querySelector('.dialpad') as HTMLDivElement;
-for (const [dir, vel] of Object.entries({
-	up: vec(0, -100),
-	down: vec(0, 100),
-	left: vec(-100, 0),
-	right: vec(100, 0),
-} as const)) {
-	const button = dialpad.querySelector('.' + dir) as HTMLElement;
-	const startHandler = (event: Event) => {
-		event.preventDefault(); // don't propogate touch event to click
-		redWitch.motion.vel = vel;
-	};
-	button.addEventListener('mousedown', startHandler);
-	button.addEventListener('touchstart', startHandler);
-	const switchHandler = (event: Event) => {
-		if (!redWitch.motion.vel.equals(vec(0, 0)))
-			redWitch.motion.vel = vel;
-	};
-	button.addEventListener('mousemove', switchHandler);
-	button.addEventListener('touchmove', switchHandler);
+function move(click: {clientX: number, clientY: number}) {
+	const dpadRect = dialpad.getBoundingClientRect();
+	const right = click.clientX - (dpadRect.left + dpadRect.width / 2);
+	const down = click.clientY - (dpadRect.top + dpadRect.height / 2);
+	redWitch.motion.vel = vec(right, down).normalize().scaleEqual(100);
 }
+function touchHandler(event: TouchEvent) {
+	event.preventDefault(); // don't propogate touch event to click
+	move(event.targetTouches[0]);
+}
+dialpad.addEventListener('touchstart', touchHandler);
+dialpad.addEventListener('touchmove', touchHandler);
+dialpad.addEventListener('mousedown', move);
+dialpad.addEventListener('mousemove', (event: MouseEvent) => {
+	event.preventDefault(); // don't scroll the page
+	if (!redWitch.motion.vel.equals(vec(0, 0)))
+		move(event);
+});
 const stop = () => redWitch.motion.vel = vec(0, 0);
 for (const eventName of ['mouseup', 'touchend', 'touchcancel'])
 	window.addEventListener(eventName, stop);
