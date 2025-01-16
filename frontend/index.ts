@@ -2,7 +2,6 @@ import {DisplayMode, Engine, Random, TileMap, vec} from 'excalibur';
 
 import {loader} from './loader';
 import {sndPlugin} from './sounds';
-import {spellSlots} from './spells';
 import {piggyAnims, redWitchAnims, terrainGrass} from './sprites';
 import {Unit} from './unit';
 
@@ -37,7 +36,6 @@ const redWitch = new Unit({
 }, {
 	maxHP: 40,
 	animations: redWitchAnims,
-	spellSlots: spellSlots.redWitch,
 });
 redWitch.animations.takeDamage.events.on('end', () => {
 	redWitch.graphics.use(redWitch.animations.idle);
@@ -77,7 +75,6 @@ function makePiggy() {
 	}, {
 		maxHP: 20,
 		animations: {...piggyAnims, charge: piggyAnims.idle, takeDamage: piggyAnims.idle},
-		spellSlots: [],
 	});
 	piggy.graphics.flipHorizontal = true;
 	game.add(piggy);
