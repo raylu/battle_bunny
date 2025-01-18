@@ -1,4 +1,5 @@
-import {Actor, CollisionType, DisplayMode, Engine, Random, TileMap, vec, type CollisionStartEvent} from 'excalibur';
+import {Actor, CollisionType, Color, DisplayMode, Engine, Font, Label, Random, TextAlign, TileMap,
+	vec, type CollisionStartEvent} from 'excalibur';
 
 import {loader} from './loader';
 import {sndPlugin} from './sounds';
@@ -74,12 +75,17 @@ const redWitch = new Unit({
 redWitch.animations.takeDamage.events.on('end', () => {
 	redWitch.graphics.use(redWitch.animations.idle);
 });
-redWitch.on('collisionstart', (event: CollisionStartEvent) => {
+redWitch.on('collisionstart', async (event: CollisionStartEvent) => {
 	if (walls.indexOf(event.other.owner as Actor) > -1) // hit a wall
 		return;
 	sndPlugin.playSound('kinetic');
 	redWitch.graphics.use(redWitch.animations.takeDamage);
 	redWitch.takeDamage(10);
+	if (redWitch.isDead()) {
+		await redWitch.die();
+		gameState.stop();
+		display.text = 'game over!';
+	}
 });
 game.add(redWitch);
 
@@ -106,7 +112,7 @@ const stop = () => redWitch.motion.vel = vec(0, 0);
 for (const eventName of ['mouseup', 'touchend', 'touchcancel'])
 	window.addEventListener(eventName, stop);
 
-function makePiggy() {
+function makePiggy(): Unit {
 	const piggy = new Unit({
 		name: 'piggy',
 		pos: vec(game.drawWidth - 19, 19 + Math.random() * (game.drawHeight - 38)),
@@ -132,20 +138,47 @@ function makePiggy() {
 		}
 	});
 	game.add(piggy);
+	return piggy;
 }
-let pigsRemaining = 100;
-let ticksSinceLastSpawn = 0;
-const interval = setInterval(() => {
-	if (pigsRemaining > 0) {
-		if (pigsRemaining / 10 < ticksSinceLastSpawn) {
-			makePiggy();
-			pigsRemaining--;
-			ticksSinceLastSpawn = 0;
-		} else
-			ticksSinceLastSpawn++;
-	} else
-		clearInterval(interval);
-}, 100);
+
+class GameState {
+	interval: Timer | null = null;
+	piggies: Unit[] = [];
+	run() {
+		display.text = '';
+		let pigsRemaining = 100;
+		let ticksSinceLastSpawn = 0;
+		this.interval = setInterval(() => {
+			if (pigsRemaining > 0) {
+				if (pigsRemaining / 10 < ticksSinceLastSpawn) {
+					this.piggies.push(makePiggy());
+					pigsRemaining--;
+					ticksSinceLastSpawn = 0;
+				} else
+					ticksSinceLastSpawn++;
+			} else
+				this.stop();
+		}, 100);
+	}
+	stop () {
+		clearInterval(this.interval as Timer);
+		while (true) {
+			const piggy = this.piggies.pop();
+			if (piggy === undefined)
+				break;
+			piggy.kill();
+		}
+	}
+}
+const gameState = new GameState();
+
+const display = new Label({
+	pos: vec(game.halfDrawWidth, game.halfDrawHeight),
+	font: new Font({family: 'Metrophobic', size: 48, textAlign: TextAlign.Center,
+		color: Color.fromRGB(96, 128, 255), shadow: {offset: vec(1, 1), color: Color.Black}}),
+});
+game.add(display);
 
 await game.start(loader);
 dialpad.style.display = 'flex';
+gameState.run();
