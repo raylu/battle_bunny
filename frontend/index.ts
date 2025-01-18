@@ -27,6 +27,39 @@ for (const tile of background.tiles)
 	tile.addGraphic(terrainGrass.getSprite(random.integer(0, 3), random.integer(0, 1)));
 game.add(background);
 
+const leftWall = new Actor({
+	height: game.drawHeight,
+	width: 1,
+	anchor: vec(0, 0),
+	pos: vec(0, 0),
+	collisionType: CollisionType.Fixed,
+});
+const walls = [
+	leftWall,
+	new Actor({ // right wall
+		height: game.drawHeight,
+		width: 1,
+		anchor: vec(0, 0),
+		pos: vec(game.drawWidth, 0),
+		collisionType: CollisionType.Fixed,
+	}),
+	new Actor({ // top wall
+		height: 1,
+		width: game.drawWidth,
+		anchor: vec(0, 0),
+		pos: vec(0, 0),
+		collisionType: CollisionType.Fixed,
+	}),
+	new Actor({ // bottom wall
+		height: 1,
+		width: game.drawWidth,
+		anchor: vec(0, 0),
+		pos: vec(0, game.drawHeight),
+		collisionType: CollisionType.Fixed,
+	}),
+]
+walls.forEach((wall) => game.add(wall));
+
 const redWitch = new Unit({
 	pos: vec(64, 200),
 	offset: vec(0, 2),
@@ -41,6 +74,13 @@ const redWitch = new Unit({
 redWitch.animations.takeDamage.events.on('end', () => {
 	redWitch.graphics.use(redWitch.animations.idle);
 });
+redWitch.on('collisionstart', (event: CollisionStartEvent) => {
+	if (walls.indexOf(event.other.owner as Actor) > -1) // hit a wall
+		return;
+	redWitch.graphics.use(redWitch.animations.takeDamage);
+	redWitch.takeDamage(10);
+	event.other.owner.kill();
+});
 game.add(redWitch);
 
 const dialpad = document.querySelector('.dialpad') as HTMLDivElement;
@@ -48,7 +88,7 @@ function move(click: {clientX: number, clientY: number}) {
 	const dpadRect = dialpad.getBoundingClientRect();
 	const right = click.clientX - (dpadRect.left + dpadRect.width / 2);
 	const down = click.clientY - (dpadRect.top + dpadRect.height / 2);
-	redWitch.motion.vel = vec(right, down).normalize().scaleEqual(100);
+	redWitch.motion.vel = vec(right, down).normalize().scaleEqual(200);
 }
 function touchHandler(event: TouchEvent) {
 	event.preventDefault(); // don't propogate touch event to click
@@ -65,15 +105,6 @@ dialpad.addEventListener('mousemove', (event: MouseEvent) => {
 const stop = () => redWitch.motion.vel = vec(0, 0);
 for (const eventName of ['mouseup', 'touchend', 'touchcancel'])
 	window.addEventListener(eventName, stop);
-
-const leftWall = new Actor({
-	height: game.drawHeight,
-	width: 1,
-	anchor: vec(0, 0),
-	pos: vec(0, 0),
-	collisionType: CollisionType.Fixed,
-});
-game.add(leftWall);
 
 function makePiggy() {
 	const piggy = new Unit({
