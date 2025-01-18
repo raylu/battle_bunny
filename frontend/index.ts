@@ -107,7 +107,8 @@ for (const eventName of ['mouseup', 'touchend', 'touchcancel'])
 
 function makePiggy() {
 	const piggy = new Unit({
-		pos: vec(480, 200),
+		name: 'piggy',
+		pos: vec(game.drawWidth - 19, 19 + Math.random() * (game.drawHeight - 38)),
 		scale: vec(2, 2),
 		width: 19,
 		height: 18,
@@ -121,16 +122,29 @@ function makePiggy() {
 	piggy.on('collisionstart', (event: CollisionStartEvent) => {
 		if (event.other.owner === leftWall)
 			setTimeout(() => piggy.kill(), 1000);
-		else {
+		else if (event.other.owner.name !== 'piggy') {
 			piggy.body.collisionType = CollisionType.PreventCollision;
 			piggy.motion.vel = vec(0, 0);
+			piggy.animations.death.reset();
 			piggy.graphics.use(piggy.animations.death);
 			setTimeout(() => piggy.kill(), 400);
 		}
 	});
 	game.add(piggy);
 }
-makePiggy();
+let pigsRemaining = 100;
+let ticksSinceLastSpawn = 0;
+const interval = setInterval(() => {
+	if (pigsRemaining > 0) {
+		if (pigsRemaining / 10 < ticksSinceLastSpawn) {
+			makePiggy();
+			pigsRemaining--;
+			ticksSinceLastSpawn = 0;
+		} else
+			ticksSinceLastSpawn++;
+	} else
+		clearInterval(interval);
+}, 100);
 
 await game.start(loader);
 dialpad.style.display = 'flex';
