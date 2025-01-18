@@ -1,4 +1,4 @@
-import {DisplayMode, Engine, Random, TileMap, vec} from 'excalibur';
+import {Actor, CollisionType, DisplayMode, Engine, Random, TileMap, vec, type CollisionStartEvent} from 'excalibur';
 
 import {loader} from './loader';
 import {sndPlugin} from './sounds';
@@ -33,6 +33,7 @@ const redWitch = new Unit({
 	scale: vec(1.5, 1.5),
 	height: 48,
 	width: 24,
+	collisionType: CollisionType.Active,
 }, {
 	maxHP: 40,
 	animations: redWitchAnims,
@@ -41,6 +42,7 @@ redWitch.animations.takeDamage.events.on('end', () => {
 	redWitch.graphics.use(redWitch.animations.idle);
 });
 game.add(redWitch);
+
 const dialpad = document.querySelector('.dialpad') as HTMLDivElement;
 function move(click: {clientX: number, clientY: number}) {
 	const dpadRect = dialpad.getBoundingClientRect();
@@ -64,17 +66,32 @@ const stop = () => redWitch.motion.vel = vec(0, 0);
 for (const eventName of ['mouseup', 'touchend', 'touchcancel'])
 	window.addEventListener(eventName, stop);
 
+const leftWall = new Actor({
+	height: game.drawHeight,
+	width: 1,
+	anchor: vec(0, 0),
+	pos: vec(0, 0),
+	collisionType: CollisionType.Fixed,
+});
+game.add(leftWall);
+
 function makePiggy() {
 	const piggy = new Unit({
 		pos: vec(480, 200),
 		scale: vec(2, 2),
 		width: 19,
 		height: 18,
+		collisionType: CollisionType.Passive,
 	}, {
 		maxHP: 20,
 		animations: {...piggyAnims, charge: piggyAnims.idle, takeDamage: piggyAnims.idle},
 	});
 	piggy.graphics.flipHorizontal = true;
+	piggy.motion.vel.x = -100;
+	piggy.on('collisionstart', (event: CollisionStartEvent) => {
+		if (event.other.owner === leftWall)
+			setTimeout(() => piggy.kill(), 1000);
+	});
 	game.add(piggy);
 }
 makePiggy();
