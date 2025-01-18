@@ -79,7 +79,6 @@ redWitch.on('collisionstart', (event: CollisionStartEvent) => {
 		return;
 	redWitch.graphics.use(redWitch.animations.takeDamage);
 	redWitch.takeDamage(10);
-	event.other.owner.kill();
 });
 game.add(redWitch);
 
@@ -115,13 +114,19 @@ function makePiggy() {
 		collisionType: CollisionType.Passive,
 	}, {
 		maxHP: 20,
-		animations: {...piggyAnims, charge: piggyAnims.idle, takeDamage: piggyAnims.idle},
+		animations: {...piggyAnims, charge: piggyAnims.idle, takeDamage: piggyAnims.death},
 	});
 	piggy.graphics.flipHorizontal = true;
 	piggy.motion.vel.x = -100;
 	piggy.on('collisionstart', (event: CollisionStartEvent) => {
 		if (event.other.owner === leftWall)
 			setTimeout(() => piggy.kill(), 1000);
+		else {
+			piggy.body.collisionType = CollisionType.PreventCollision;
+			piggy.motion.vel = vec(0, 0);
+			piggy.graphics.use(piggy.animations.death);
+			setTimeout(() => piggy.kill(), 400);
+		}
 	});
 	game.add(piggy);
 }

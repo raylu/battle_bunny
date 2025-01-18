@@ -44,7 +44,7 @@ const piggySprites = SpriteSheet.fromImageSource({
 });
 export const piggyAnims = {
 	idle: Animation.fromSpriteSheet(piggySprites, range(5, 8), 100),
-	death: Animation.fromSpriteSheet(piggySprites, range(0, 3), 150, AnimationStrategy.Freeze),
+	death: Animation.fromSpriteSheet(piggySprites, range(0, 3), 100, AnimationStrategy.Freeze),
 } as const;
 
 const terrainGrassImg = new ImageSource('static/sprites/terrain/tileset_grass.png');
