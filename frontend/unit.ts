@@ -1,4 +1,4 @@
-import {Actor, type ActorArgs, Color, Debug, Engine, type ExcaliburGraphicsContext, type Rectangle,
+import {Actor, type ActorArgs, CollisionType, Color, Debug, Engine, type ExcaliburGraphicsContext, type Rectangle,
 	Vector, vec} from 'excalibur';
 import type {UnitAnimations} from './sprites';
 
@@ -32,6 +32,7 @@ export class Unit extends Actor {
 					color: Color.Chartreuse,
 					pos: vec(-barMaxWidth / 2 + 1, -config.height / 2 - 6),
 					anchor: vec(0, 1),
+					collisionType: CollisionType.PreventCollision,
 				}),
 			};
 			this.health.bar.graphics.onPostDraw = (gfx: ExcaliburGraphicsContext) => {

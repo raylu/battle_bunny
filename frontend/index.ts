@@ -6,8 +6,9 @@ import {sndPlugin} from './sounds';
 import {piggyAnims, redWitchAnims, terrainGrass} from './sprites';
 import {Unit} from './unit';
 
+const canvas = document.querySelector('canvas#game') as HTMLCanvasElement;
 const game = new Engine({
-	canvasElement: document.querySelector('canvas#game') as HTMLCanvasElement,
+	canvasElement: canvas,
 	resolution: {width: 512, height: 640}, // must be a multiple of referenceGrassSprite.width (64)
 	suppressHiDPIScaling: true,
 	displayMode: DisplayMode.FitContainer,
@@ -61,8 +62,9 @@ const walls = [
 ]
 walls.forEach((wall) => game.add(wall));
 
+const RED_WITCH_START = vec(64, 200);
 const redWitch = new Unit({
-	pos: vec(64, 200),
+	pos: RED_WITCH_START.clone(),
 	offset: vec(0, 2),
 	scale: vec(1.5, 1.5),
 	height: 48,
@@ -79,6 +81,7 @@ redWitch.on('collisionstart', async (event: CollisionStartEvent) => {
 	if (walls.indexOf(event.other.owner as Actor) > -1) // hit a wall
 		return;
 	sndPlugin.playSound('kinetic');
+	redWitch.animations.takeDamage.reset();
 	redWitch.graphics.use(redWitch.animations.takeDamage);
 	redWitch.takeDamage(10);
 	if (redWitch.isDead()) {
@@ -91,6 +94,8 @@ game.add(redWitch);
 
 const dialpad = document.querySelector('.dialpad') as HTMLDivElement;
 function move(click: {clientX: number, clientY: number}) {
+	if (redWitch.isDead())
+		return;
 	const dpadRect = dialpad.getBoundingClientRect();
 	const right = click.clientX - (dpadRect.left + dpadRect.width / 2);
 	const down = click.clientY - (dpadRect.top + dpadRect.height / 2);
@@ -142,10 +147,15 @@ function makePiggy(): Unit {
 }
 
 class GameState {
+	running = false;
 	interval: Timer | null = null;
 	piggies: Unit[] = [];
 	run() {
+		this.running = true;
 		display.text = '';
+		redWitch.reset();
+		redWitch.pos = RED_WITCH_START.clone();
+
 		let pigsRemaining = 100;
 		let ticksSinceLastSpawn = 0;
 		this.interval = setInterval(() => {
@@ -168,6 +178,7 @@ class GameState {
 				break;
 			piggy.kill();
 		}
+		this.running = false;
 	}
 }
 const gameState = new GameState();
@@ -182,3 +193,7 @@ game.add(display);
 await game.start(loader);
 dialpad.style.display = 'flex';
 gameState.run();
+canvas.addEventListener('click', () => {
+	if (!gameState.running)
+		gameState.run();
+});
