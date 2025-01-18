@@ -77,6 +77,7 @@ redWitch.animations.takeDamage.events.on('end', () => {
 redWitch.on('collisionstart', (event: CollisionStartEvent) => {
 	if (walls.indexOf(event.other.owner as Actor) > -1) // hit a wall
 		return;
+	sndPlugin.playSound('kinetic');
 	redWitch.graphics.use(redWitch.animations.takeDamage);
 	redWitch.takeDamage(10);
 });
