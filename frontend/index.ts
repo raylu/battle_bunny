@@ -137,6 +137,7 @@ function makePiggy(): Unit {
 		else if (event.other.owner.name !== 'piggy') {
 			piggy.body.collisionType = CollisionType.PreventCollision;
 			piggy.motion.vel = vec(0, 0);
+			piggy.takeDamage(20);
 			piggy.animations.death.reset();
 			piggy.graphics.use(piggy.animations.death);
 			setTimeout(() => piggy.kill(), 400);
@@ -164,7 +165,13 @@ class GameState {
 				this.stop();
 				return;
 			}
-			if (++ticksSinceAttack === 5) {
+			ticksSinceAttack++;
+			if (ticksSinceAttack === 3) {
+				redWitch.graphics.use(redWitch.animations.charge);
+			}
+			if (ticksSinceAttack === 6) {
+				if (redWitch.graphics.current === redWitch.animations.charge)
+					redWitch.graphics.use(redWitch.animations.idle);
 				const scissors = new Actor({
 					name: 'scissors',
 					pos: redWitch.pos.add(vec(redWitch.width, 0)),
