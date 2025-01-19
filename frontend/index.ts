@@ -135,6 +135,7 @@ function makePiggy(): Unit {
 		if (event.other.owner === leftWall)
 			setTimeout(() => piggy.kill(), 1000);
 		else if (event.other.owner.name !== 'piggy') {
+			sndPlugin.playSound('spell');
 			piggy.body.collisionType = CollisionType.PreventCollision;
 			piggy.motion.vel = vec(0, 0);
 			piggy.takeDamage(20);
