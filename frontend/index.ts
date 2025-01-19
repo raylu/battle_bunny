@@ -184,6 +184,10 @@ class GameState {
 					
 				});
 				scissors.graphics.use(scissorsSprite);
+				scissors.on('collisionstart', (event: CollisionStartEvent) => {
+					if (event.other.owner !== redWitch)
+						scissors.kill();
+				});
 				scissors.motion.vel = vec(400, 0);
 				game.add(scissors);
 				ticksSinceAttack = 0;
