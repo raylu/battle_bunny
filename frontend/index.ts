@@ -3,7 +3,7 @@ import {Actor, CollisionType, Color, DisplayMode, Engine, Font, Label, Random, T
 
 import {loader} from './loader';
 import {sndPlugin} from './sounds';
-import {piggyAnims, redWitchAnims, terrainGrass} from './sprites';
+import {piggyAnims, redWitchAnims, scissorsSprite, terrainGrass} from './sprites';
 import {Unit} from './unit';
 
 const canvas = document.querySelector('canvas#game') as HTMLCanvasElement;
@@ -78,15 +78,15 @@ redWitch.animations.takeDamage.events.on('end', () => {
 	redWitch.graphics.use(redWitch.animations.idle);
 });
 redWitch.on('collisionstart', async (event: CollisionStartEvent) => {
-	if (walls.indexOf(event.other.owner as Actor) > -1) // hit a wall
+	if (event.other.owner.name === 'scissors' || walls.indexOf(event.other.owner as Actor) > -1)
 		return;
 	sndPlugin.playSound('kinetic');
 	redWitch.animations.takeDamage.reset();
 	redWitch.graphics.use(redWitch.animations.takeDamage);
 	redWitch.takeDamage(10);
 	if (redWitch.isDead()) {
-		await redWitch.die();
 		gameState.stop();
+		await redWitch.die();
 		display.text = 'game over!';
 	}
 });
@@ -158,16 +158,34 @@ class GameState {
 
 		let pigsRemaining = 100;
 		let ticksSinceLastSpawn = 0;
+		let ticksSinceAttack = 0;
 		this.interval = setInterval(() => {
-			if (pigsRemaining > 0) {
-				if (pigsRemaining / 10 < ticksSinceLastSpawn) {
-					this.piggies.push(makePiggy());
-					pigsRemaining--;
-					ticksSinceLastSpawn = 0;
-				} else
-					ticksSinceLastSpawn++;
-			} else
+			if (pigsRemaining === 0) {
 				this.stop();
+				return;
+			}
+			if (++ticksSinceAttack === 5) {
+				const scissors = new Actor({
+					name: 'scissors',
+					pos: redWitch.pos.add(vec(redWitch.width, 0)),
+					width: scissorsSprite.width,
+					height: scissorsSprite.height,
+					scale: vec(0.1, 0.1),
+					rotation: 5.1,
+					collisionType: CollisionType.Passive,
+					
+				});
+				scissors.graphics.use(scissorsSprite);
+				scissors.motion.vel = vec(400, 0);
+				game.add(scissors);
+				ticksSinceAttack = 0;
+			}
+			if (pigsRemaining / 10 < ticksSinceLastSpawn) {
+				this.piggies.push(makePiggy());
+				pigsRemaining--;
+				ticksSinceLastSpawn = 0;
+			} else
+				ticksSinceLastSpawn++;
 		}, 100);
 	}
 	stop () {

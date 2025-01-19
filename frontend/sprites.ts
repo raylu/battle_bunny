@@ -30,7 +30,17 @@ export const redWitchAnims: UnitAnimations = {
 	takeDamage: witchAnimation('red_witch/take_damage', 3, 32, 64, 0, AnimationStrategy.Freeze),
 	death: witchAnimation('red_witch/death', 14, 56, 64, 0, AnimationStrategy.Freeze),
 } as const;
-export const redWitchIconImg = new ImageSource('static/sprites/red_witch/icon.gif');
+
+const scissorsImg = new ImageSource('static/sprites/scissors.png');
+export const scissorsSprite = SpriteSheet.fromImageSource({
+	image: scissorsImg,
+	grid: {
+		rows: 1,
+		columns: 1,
+		spriteHeight: 420,
+		spriteWidth: 358,
+	}
+}).getSprite(0, 0);
 
 const piggyImg = new ImageSource('static/sprites/piggy.png');
 const piggySprites = SpriteSheet.fromImageSource({
@@ -58,4 +68,4 @@ export const terrainGrass = SpriteSheet.fromImageSource({
 	},
 });
 
-loader.addResources([...resources, redWitchIconImg, piggyImg, terrainGrassImg]);
+loader.addResources([...resources, scissorsImg, piggyImg, terrainGrassImg]);
