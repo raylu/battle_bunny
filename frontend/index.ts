@@ -163,8 +163,11 @@ class GameState {
 		let ticksSinceAttack = 0;
 		this.interval = setInterval(() => {
 			if (pigsRemaining === 0) {
-				this.stop();
-				return;
+				// wait until all piggies moves off screen or die
+				if (this.piggies.findLastIndex((piggy) => !piggy.isKilled()) === -1) {
+					this.stop();
+					return;
+				}
 			}
 			ticksSinceAttack++;
 			if (ticksSinceAttack === 3) {
@@ -192,7 +195,7 @@ class GameState {
 				game.add(scissors);
 				ticksSinceAttack = 0;
 			}
-			if (pigsRemaining / 10 < ticksSinceLastSpawn) {
+			if (pigsRemaining > 0 && pigsRemaining / 10 < ticksSinceLastSpawn) {
 				this.piggies.push(makePiggy());
 				pigsRemaining--;
 				ticksSinceLastSpawn = 0;
