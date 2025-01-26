@@ -87,7 +87,6 @@ redWitch.on('collisionstart', async (event: CollisionStartEvent) => {
 	if (redWitch.isDead()) {
 		gameState.stop();
 		await redWitch.die();
-		display.text = 'game over!';
 	}
 });
 game.add(redWitch);
@@ -142,6 +141,8 @@ function makePiggy(): Unit {
 			piggy.animations.death.reset();
 			piggy.graphics.use(piggy.animations.death);
 			setTimeout(() => piggy.kill(), 400);
+			gameState.score++;
+			scoreDisplay.text = gameState.score.toString();
 		}
 	});
 	game.add(piggy);
@@ -152,9 +153,12 @@ class GameState {
 	running = false;
 	interval: Timer | null = null;
 	piggies: Unit[] = [];
+	score = 0;
 	run() {
 		this.running = true;
+		this.score = 0;
 		display.text = '';
+		scoreDisplay.text = '';
 		redWitch.reset();
 		redWitch.pos = RED_WITCH_START.clone();
 
@@ -212,16 +216,23 @@ class GameState {
 			piggy.kill();
 		}
 		this.running = false;
+		display.text = `game over!\n${this.score}`;
 	}
 }
 const gameState = new GameState();
 
 const display = new Label({
-	pos: vec(game.halfDrawWidth, game.halfDrawHeight),
+	pos: vec(game.halfDrawWidth, game.halfDrawHeight-48),
 	font: new Font({family: 'Metrophobic', size: 48, textAlign: TextAlign.Center,
 		color: Color.fromRGB(96, 128, 255), shadow: {offset: vec(1, 1), color: Color.Black}}),
 });
 game.add(display);
+const scoreDisplay = new Label({
+	pos: vec(game.drawWidth - 8, 8),
+	font: new Font({family: 'Metrophobic', size: 36, textAlign: TextAlign.Right,
+		color: Color.fromRGB(128, 196, 255), shadow: {offset: vec(1, 1), color: Color.Black}}),
+});
+game.add(scoreDisplay);
 
 await game.start(loader);
 dialpad.style.display = 'flex';
