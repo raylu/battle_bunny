@@ -133,7 +133,11 @@ function makePiggy(): Unit {
 	piggy.on('collisionstart', (event: CollisionStartEvent) => {
 		if (event.other.owner === leftWall)
 			setTimeout(() => piggy.kill(), 1000);
-		else if (event.other.owner.name !== 'piggy') {
+		else if (event.other.owner === redWitch) {
+			piggy.body.collisionType = CollisionType.PreventCollision;
+			piggy.motion.vel = vec(0, 0);
+			setTimeout(() => piggy.kill(), 400);
+		} else if (event.other.owner.name !== 'piggy') { // scissors
 			sndPlugin.playSound('spell');
 			piggy.body.collisionType = CollisionType.PreventCollision;
 			piggy.motion.vel = vec(0, 0);
